@@ -233,7 +233,7 @@ var DeltaBlue;
       this.value = value;
       this.determinedBy = null;
       this.mark = 0;
-      this.walkStrength = /* Unimplemented: DownCast: dynamic to Strength */ WEAKEST;
+      this.walkStrength = WEAKEST;
       this.stay = true;
     }
     addConstraint(c) {
@@ -259,7 +259,7 @@ var DeltaBlue;
       c.markUnsatisfied();
       c.removeFromGraph();
       let unsatisfied = this.removePropagateFrom(out);
-      let strength = /* Unimplemented: DownCast: dynamic to Strength */ REQUIRED;
+      let strength = REQUIRED;
       do {
         for (let i = 0; i < unsatisfied.length; i++) {
           let u = unsatisfied[i];
@@ -307,7 +307,7 @@ var DeltaBlue;
     }
     removePropagateFrom(out) {
       out.determinedBy = null;
-      out.walkStrength = /* Unimplemented: DownCast: dynamic to Strength */ WEAKEST;
+      out.walkStrength = WEAKEST;
       out.stay = true;
       let unsatisfied = /* Unimplemented ArrayList */[];
       let todo = /* Unimplemented ArrayList */[out];
