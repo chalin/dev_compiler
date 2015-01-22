@@ -183,4 +183,70 @@ main() {
     '''
     });
   });
+
+  test('infer type on overriden fields', () {
+    testChecker({
+      '/main.dart': '''
+        class A {
+          int x = 2;
+        }
+
+        class B extends A {
+          /*warning:InferableOverride*/get x => 3;
+        }
+
+        foo() {
+          String y = /*info:DownCast*/new B().x;
+        }
+    '''
+    }, inferFromOverrides: false);
+
+    testChecker({
+      '/main.dart': '''
+        class A {
+          int x = 2;
+        }
+
+        class B extends A {
+          get x => 3;
+        }
+
+        foo() {
+          String y = /*severe:StaticTypeError*/new B().x;
+        }
+    '''
+    }, inferFromOverrides: true);
+
+    testChecker({
+      '/main.dart': '''
+        class A {
+          int x = 2;
+        }
+
+        class B implements A {
+          /*warning:InferableOverride*/get x => 3;
+        }
+
+        foo() {
+          String y = /*info:DownCast*/new B().x;
+        }
+    '''
+    }, inferFromOverrides: false);
+
+    testChecker({
+      '/main.dart': '''
+        class A {
+          int x = 2;
+        }
+
+        class B implements A {
+          get x => 3;
+        }
+
+        foo() {
+          String y = /*severe:StaticTypeError*/new B().x;
+        }
+    '''
+    }, inferFromOverrides: true);
+  });
 }

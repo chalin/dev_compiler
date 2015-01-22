@@ -16,6 +16,7 @@ import 'package:analyzer/src/generated/source_io.dart';
 import 'package:logging/logging.dart' as logger;
 
 import 'package:ddc/src/report.dart';
+import 'package:ddc/src/utils.dart';
 import 'dart_sdk.dart';
 import 'multi_package_resolver.dart';
 
@@ -26,11 +27,13 @@ const _useMultipackage =
 
 /// Encapsulates a resolver from the analyzer package.
 class TypeResolver {
-  final InternalAnalysisContext context = _initContext();
+  final InternalAnalysisContext context;
 
   final Map<Uri, Source> _sources = <Uri, Source>{};
 
-  TypeResolver(DartUriResolver sdkResolver, [List otherResolvers]) {
+  TypeResolver(DartUriResolver sdkResolver,
+      {List otherResolvers, bool inferFromOverrides: true})
+      : context = _initContext(inferFromOverrides) {
     var resolvers = [sdkResolver];
     if (otherResolvers == null) {
       resolvers.add(new FileUriResolver());
@@ -85,12 +88,15 @@ class TypeResolver {
 }
 
 /// Creates an analysis context that contains our restricted typing rules.
-InternalAnalysisContext _initContext() {
+InternalAnalysisContext _initContext(bool inferFromOverrides) {
   var options = new AnalysisOptionsImpl()..cacheSize = 512;
   InternalAnalysisContext res = AnalysisEngine.instance.createAnalysisContext();
-  return res
-    ..analysisOptions = options
-    ..resolverVisitorFactory = RestrictedResolverVisitor.constructor;
+  res.analysisOptions = options;
+  res.resolverVisitorFactory = RestrictedResolverVisitor.constructor;
+  if (inferFromOverrides) {
+    res.typeResolverVisitorFactory = RestrictedTypeResolverVisitor.constructor;
+  }
+  return res;
 }
 
 /// Overrides the default [ResolverVisitor] to comply with DDC's restricted
@@ -156,4 +162,57 @@ class RestrictedStaticTypeAnalyzer extends StaticTypeAnalyzer {
   // TODO(vsm): in visitFunctionDeclaration: Should we ever use the expression
   // type in a (...) => expr or just the written type?
 
+}
+
+class RestrictedTypeResolverVisitor extends TypeResolverVisitor {
+  RestrictedTypeResolverVisitor(
+      Library library, Source source, TypeProvider typeProvider)
+      : super.con1(library, source, typeProvider);
+
+  static TypeResolverVisitor constructor(
+      Library library, Source source, TypeProvider typeProvider) =>
+      new RestrictedTypeResolverVisitor(library, source, typeProvider);
+
+  @override
+  Object visitVariableDeclaration(VariableDeclaration node) {
+    var res = super.visitVariableDeclaration(node);
+
+    var element = node.element;
+    VariableDeclarationList parent = node.parent;
+    // only infer types if it was left blank
+    if (!element.type.isDynamic || parent.type != null) return res;
+
+    // const fields and top-levels will be inferred from the initializer value
+    // somewhere else.
+    if (parent.isConst) return res;
+
+    // For fields, we can infer the type if it was just ommited from the
+    // superclass.
+    if (node.element is FieldElement) {
+      // Infer final fields that hide/shadow a field/getter from a parent class
+      // or interface.
+      var getter = element.getter;
+      var type = searchTypeFor(element.enclosingElement.type, getter);
+      if (type != null && !type.returnType.isDynamic) {
+        element.type = type.returnType;
+        getter.returnType = type.returnType;
+      }
+    }
+    return res;
+  }
+
+  @override
+  Object visitMethodDeclaration(MethodDeclaration node) {
+    var res = super.visitMethodDeclaration(node);
+    var element = node.element;
+    if ((element is MethodElement || element is PropertyAccessorElement) &&
+        element.returnType.isDynamic &&
+        node.returnType == null) {
+      var type = searchTypeFor(element.enclosingElement.type, element);
+      if (type != null && !type.returnType.isDynamic) {
+        element.returnType = type.returnType;
+      }
+    }
+    return res;
+  }
 }

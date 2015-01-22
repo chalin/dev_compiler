@@ -43,7 +43,8 @@ import 'package:ddc/devc.dart' show compile;
 ///     });
 ///
 CheckerResults testChecker(Map<String, String> testFiles, {bool mockSdk: true,
-    CheckerReporter reporter, covariantGenerics: true, relaxedCasts: true}) {
+    CheckerReporter reporter, covariantGenerics: true, relaxedCasts: true,
+    inferFromOverrides: false}) {
   expect(testFiles.containsKey('/main.dart'), isTrue,
       reason: '`/main.dart` is missing in testFiles');
 
@@ -52,7 +53,9 @@ CheckerResults testChecker(Map<String, String> testFiles, {bool mockSdk: true,
       ? TypeResolver.sdkResolverFromMock(mockSdkSources)
       : TypeResolver.sdkResolverFromDir(dartSdkDirectory);
   var testUriResolver = new _TestUriResolver(testFiles);
-  var resolver = new TypeResolver(dartUriResolver, [testUriResolver]);
+  var resolver = new TypeResolver(dartUriResolver,
+      otherResolvers: [testUriResolver],
+      inferFromOverrides: inferFromOverrides);
 
   // Run the checker on /main.dart.
   var mainFile = new Uri.file('/main.dart');

@@ -8,6 +8,7 @@ import 'package:logging/logging.dart' as logger;
 
 import 'package:ddc/src/info.dart';
 import 'package:ddc/src/report.dart' show CheckerReporter;
+import 'package:ddc/src/utils.dart' show getMemberType;
 import 'rules.dart';
 
 /// Checks for overriding declarations of fields and methods. This is used to
@@ -185,28 +186,6 @@ class _OverrideChecker {
     }
   }
 
-  /// Looks up the declaration that matches [member] in [type] and returns it's
-  /// declared type.
-  FunctionType _getMemberType(InterfaceType type, ExecutableElement member) {
-    ExecutableElement baseMethod;
-    String memberName = member.name;
-
-    final isGetter = member is PropertyAccessorElement && member.isGetter;
-    final isSetter = member is PropertyAccessorElement && member.isSetter;
-
-    if (isGetter) {
-      assert(!isSetter);
-      // Look for getter or field.
-      baseMethod = type.getGetter(memberName);
-    } else if (isSetter) {
-      baseMethod = type.getSetter(memberName);
-    } else {
-      baseMethod = type.getMethod(memberName);
-    }
-    if (baseMethod == null) return null;
-    return _rules.elementType(baseMethod);
-  }
-
   /// Checks that [element] correctly overrides its corresponding member in
   /// [type].
   ///
@@ -238,7 +217,7 @@ class _OverrideChecker {
 
     FunctionType subType = _rules.elementType(element);
     // TODO(vsm): Test for generic
-    FunctionType baseType = _getMemberType(type, element);
+    FunctionType baseType = getMemberType(type, element);
 
     if (baseType != null) {
       //var result = _checkOverride(subType, baseType);
