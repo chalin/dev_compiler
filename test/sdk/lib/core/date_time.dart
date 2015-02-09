@@ -575,106 +575,65 @@ class DateTime implements Comparable {
     return new Duration(milliseconds: ms - otherMs);
   }
 
-  external DateTime._internal(int year,
-                              int month,
-                              int day,
-                              int hour,
-                              int minute,
-                              int second,
-                              int millisecond,
-                              bool isUtc);
-  external DateTime._now();
-  /// Returns the time as milliseconds since epoch, or null if the
-  /// values are out of range.
-  external static int _brokenDownDateToMillisecondsSinceEpoch(
+  @patch
+  DateTime._internal(int year,
+                     int month,
+                     int day,
+                     int hour,
+                     int minute,
+                     int second,
+                     int millisecond,
+                     bool isUtc)
+        // checkBool is manually inlined here because dart2js doesn't inline it
+        // and [isUtc] is usually a constant.
+      : this.isUtc = isUtc is bool ? isUtc : throw new ArgumentError(isUtc),
+        millisecondsSinceEpoch = checkInt(Primitives.valueFromDecomposedDate(
+            year, month, day, hour, minute, second, millisecond, isUtc));
+  @patch
+  DateTime._now()
+      : isUtc = false,
+        millisecondsSinceEpoch = Primitives.dateNow();
+  @patch
+  static int _brokenDownDateToMillisecondsSinceEpoch(
       int year, int month, int day, int hour, int minute, int second,
-      int millisecond, bool isUtc);
+      int millisecond, bool isUtc) {
+    return Primitives.valueFromDecomposedDate(
+        year, month, day, hour, minute, second, millisecond, isUtc);
+  }
 
-  /**
-   * The abbreviated time zone name&mdash;for example,
-   * [:"CET":] or [:"CEST":].
-   */
-  external String get timeZoneName;
+  @patch
+  String get timeZoneName {
+    if (isUtc) return "UTC";
+    return Primitives.getTimeZoneName(this);
+  }
 
-  /**
-   * The time zone offset, which
-   * is the difference between local time and UTC.
-   *
-   * The offset is positive for time zones east of UTC.
-   *
-   * Note, that JavaScript, Python and C return the difference between UTC and
-   * local time. Java, C# and Ruby return the difference between local time and
-   * UTC.
-   */
-  external Duration get timeZoneOffset;
+  @patch
+  Duration get timeZoneOffset {
+    if (isUtc) return new Duration();
+    return new Duration(minutes: Primitives.getTimeZoneOffsetInMinutes(this));
+  }
 
-  /**
-   * The year.
-   *
-   *     DateTime moonLanding = DateTime.parse("1969-07-20 20:18:00");
-   *     assert(moonLanding.year == 1969);
-   */
-  external int get year;
+  @patch
+  int get year => Primitives.getYear(this);
 
-  /**
-   * The month [1..12].
-   *
-   *     DateTime moonLanding = DateTime.parse("1969-07-20 20:18:00");
-   *     assert(moonLanding.month == 7);
-   *     assert(moonLanding.month == DateTime.JULY);
-   */
-  external int get month;
+  @patch
+  int get month => Primitives.getMonth(this);
 
-  /**
-   * The day of the month [1..31].
-   *
-   *     DateTime moonLanding = DateTime.parse("1969-07-20 20:18:00");
-   *     assert(moonLanding.day == 20);
-   */
-  external int get day;
+  @patch
+  int get day => Primitives.getDay(this);
 
-  /**
-   * The hour of the day, expressed as in a 24-hour clock [0..23].
-   *
-   *     DateTime moonLanding = DateTime.parse("1969-07-20 20:18:00");
-   *     assert(moonLanding.hour == 20);
-   */
-  external int get hour;
+  @patch
+  int get hour => Primitives.getHours(this);
 
-  /**
-   * The minute [0...59].
-   *
-   *     DateTime moonLanding = DateTime.parse("1969-07-20 20:18:00");
-   *     assert(moonLanding.minute == 18);
-   */
-  external int get minute;
+  @patch
+  int get minute => Primitives.getMinutes(this);
 
-  /**
-   * The second [0...59].
-   *
-   *     DateTime moonLanding = DateTime.parse("1969-07-20 20:18:00");
-   *     assert(moonLanding.second == 0);
-   */
-  external int get second;
+  @patch
+  int get second => Primitives.getSeconds(this);
 
-  /**
-   * The millisecond [0...999].
-   *
-   *     DateTime moonLanding = DateTime.parse("1969-07-20 20:18:00");
-   *     assert(moonLanding.millisecond == 0);
-   */
-  external int get millisecond;
+  @patch
+  int get millisecond => Primitives.getMilliseconds(this);
 
-  /**
-   * The day of the week [MONDAY]..[SUNDAY].
-   *
-   * In accordance with ISO 8601
-   * a week starts with Monday, which has the value 1.
-   *
-   *     DateTime moonLanding = DateTime.parse("1969-07-20 20:18:00");
-   *     assert(moonLanding.weekday == 7);
-   *     assert(moonLanding.weekday == DateTime.SUNDAY);
-   *
-   */
-  external int get weekday;
+  @patch
+  int get weekday => Primitives.getWeekday(this);
 }

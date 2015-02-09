@@ -495,20 +495,51 @@ class JsonDecoder extends Converter<String, Object> {
    */
   dynamic convert(String input) => _parseJson(input, _reviver);
 
-  /**
-   * Starts a conversion from a chunked JSON string to its corresponding
-   * object.
-   *
-   * The output [sink] receives exactly one decoded element through `add`.
-   */
-  external StringConversionSink startChunkedConversion(Sink<Object> sink);
+  @patch
+  StringConversionSink startChunkedConversion(Sink<Object> sink) {
+    return new _JsonDecoderSink(_reviver, sink);
+  }
 
   // Override the base-classes bind, to provide a better type.
   Stream<Object> bind(Stream<String> stream) => super.bind(stream);
 }
 
 // Internal optimized JSON parsing implementation.
-external _parseJson(String source, reviver(key, value));
+/**
+ * Parses [json] and builds the corresponding parsed JSON value.
+ *
+ * Parsed JSON values Nare of the types [num], [String], [bool], [Null],
+ * [List]s of parsed JSON values or [Map]s from [String] to parsed
+ * JSON values.
+ *
+ * The optional [reviver] function, if provided, is called once for each object
+ * or list property parsed. The arguments are the property name ([String]) or
+ * list index ([int]), and the value is the parsed value.  The return value of
+ * the reviver will be used as the value of that property instead of the parsed
+ * value.  The top level value is passed to the reviver with the empty string as
+ * a key.
+ *
+ * Throws [FormatException] if the input is not valid JSON text.
+ */
+@patch
+_parseJson(String source, reviver(key, value)) {
+  if (source is! String) throw new ArgumentError(source);
+
+  var parsed;
+  try {
+    parsed = JS('=Object|JSExtendableArray|Null|bool|num|String',
+                'JSON.parse(#)',
+                source);
+  } catch (e) {
+    throw new FormatException(JS('String', 'String(#)', e));
+  }
+
+  if (reviver == null) {
+    return _convertJsonToDartLazy(parsed);
+  } else {
+    return _convertJsonToDart(parsed, reviver);
+  }
+}
 
 
 // Implementation of encoder/stringifier.

@@ -191,3 +191,17 @@ part "string_sink.dart";
 part "symbol.dart";
 part "type.dart";
 part "uri.dart";
+import "dart:_internal" as _symbol_dev;
+
+class _ListConstructorSentinel extends JSInt {
+  const _ListConstructorSentinel();
+}
+_symbolMapToStringMap(Map<Symbol, dynamic> map) {
+  if (map == null) return null;
+  var result = new Map<String, dynamic>();
+  map.forEach((Symbol key, value) {
+    result[_symbolToString(key)] = value;
+  });
+  return result;
+}
+String _symbolToString(Symbol symbol) => _symbol_dev.Symbol.getName(symbol);

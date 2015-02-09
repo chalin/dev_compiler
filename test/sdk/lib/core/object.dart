@@ -58,39 +58,21 @@ class Object {
    */
   bool operator ==(other) => identical(this, other);
 
-  /**
-   * Get a hash code for this object.
-   *
-   * All objects have hash codes. Hash codes are guaranteed to be the
-   * same for objects that are equal when compared using the equality
-   * operator [:==:]. Other than that there are no guarantees about
-   * the hash codes. They will not be consistent between runs and
-   * there are no distribution guarantees.
-   *
-   * If a subclass overrides [hashCode] it should override the
-   * equality operator as well to maintain consistency.
-   */
-  external int get hashCode;
+  @patch
+  int get hashCode => Primitives.objectHashCode(this);
 
-  /**
-   * Returns a string representation of this object.
-   */
-  external String toString();
+  @patch
+  String toString() => Primitives.objectToString(this);
 
-  /**
-   * [noSuchMethod] is invoked when users invoke a non-existent method
-   * on an object. The name of the method and the arguments of the
-   * invocation are passed to [noSuchMethod] in an [Invocation].
-   * If [noSuchMethod] returns a value, that value becomes the result of
-   * the original invocation.
-   *
-   * The default behavior of [noSuchMethod] is to throw a
-   * [NoSuchMethodError].
-   */
-  external dynamic noSuchMethod(Invocation invocation);
+  @patch
+  dynamic noSuchMethod(Invocation invocation) {
+    throw new NoSuchMethodError(
+        this,
+        invocation.memberName,
+        invocation.positionalArguments,
+        invocation.namedArguments);
+  }
 
-  /**
-   * A representation of the runtime type of the object.
-   */
-  external Type get runtimeType;
+  @patch
+  Type get runtimeType => getRuntimeType(this);
 }

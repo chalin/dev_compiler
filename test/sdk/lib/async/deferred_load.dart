@@ -17,13 +17,11 @@ class DeferredLibrary {
 
   const DeferredLibrary(this.libraryName, {this.uri});
 
-  /**
-   * Ensure that [libraryName] has been loaded.
-   *
-   * If the library fails to load, the Future will complete with a
-   * DeferredLoadException.
-   */
-  external Future<Null> load();
+  @patch
+  Future<Null> load() {
+    throw 'DeferredLibrary not supported. '
+          'please use the `import "lib.dart" deferred as lib` syntax.';
+  }
 }
 
 /**

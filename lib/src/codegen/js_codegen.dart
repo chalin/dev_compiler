@@ -674,11 +674,15 @@ $name.prototype[Symbol.iterator] = function() {
   @override
   void visitSimpleIdentifier(SimpleIdentifier node) {
     var e = node.staticElement;
-    if (e.enclosingElement is CompilationUnitElement &&
-        (e.library != libraryInfo.library || _needsModuleGetter(e))) {
-      out.write('${_jsLibraryName(e.library)}.');
-    } else if (currentClass != null && _needsImplicitThis(e)) {
-      out.write('this.');
+    if (e == null) {
+      out.write('/* Unimplemented unknown name */');
+    } else {
+      if (e.enclosingElement is CompilationUnitElement &&
+      (e.library != libraryInfo.library || _needsModuleGetter(e))) {
+        out.write('${_jsLibraryName(e.library)}.');
+      } else if (currentClass != null && _needsImplicitThis(e)) {
+        out.write('this.');
+      }
     }
     out.write(node.name);
   }

@@ -13,14 +13,11 @@ part of dart.core;
  */
 class StringBuffer implements StringSink {
 
-  /** Creates the string buffer with an initial content. */
-  external StringBuffer([Object content = ""]);
+  @patch
+  StringBuffer([Object content = ""]) : _contents = '$content';
 
-  /**
-   * Returns the length of the content that has been accumulated so far.
-   * This is a constant-time operation.
-   */
-  external int get length;
+  @patch
+  int get length => _contents.length;
 
   /** Returns whether the buffer is empty. This is a constant-time operation. */
   bool get isEmpty => length == 0;
@@ -31,11 +28,15 @@ class StringBuffer implements StringSink {
    */
   bool get isNotEmpty => !isEmpty;
 
-  /// Adds the contents of [obj], converted to a string, to the buffer.
-  external void write(Object obj);
+  @patch
+  void write(Object obj) {
+    _writeString('$obj');
+  }
 
-  /// Adds the string representation of [charCode] to the buffer.
-  external void writeCharCode(int charCode);
+  @patch
+  void writeCharCode(int charCode) {
+    _writeString(new String.fromCharCode(charCode));
+  }
 
   void writeAll(Iterable objects, [String separator = ""]) {
     Iterator iterator = objects.iterator;
@@ -58,11 +59,11 @@ class StringBuffer implements StringSink {
     write("\n");
   }
 
-  /**
-   * Clears the string buffer.
-   */
-  external void clear();
+  @patch
+  void clear() {
+    _contents = "";
+  }
 
-  /// Returns the contents of buffer as a concatenated string.
-  external String toString();
+  @patch
+  String toString() => Primitives.flattenString(_contents);
 }

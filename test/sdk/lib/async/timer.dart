@@ -104,8 +104,18 @@ abstract class Timer {
    */
   bool get isActive;
 
-  external static Timer _createTimer(Duration duration, void callback());
-  external static Timer _createPeriodicTimer(Duration duration,
-                                             void callback(Timer timer));
+  @patch
+  static Timer _createTimer(Duration duration, void callback()) {
+    int milliseconds = duration.inMilliseconds;
+    if (milliseconds < 0) milliseconds = 0;
+    return new TimerImpl(milliseconds, callback);
+  }
+  @patch
+  static Timer _createPeriodicTimer(Duration duration,
+                             void callback(Timer timer)) {
+    int milliseconds = duration.inMilliseconds;
+    if (milliseconds < 0) milliseconds = 0;
+    return new TimerImpl.periodic(milliseconds, callback);
+  }
 }
 

@@ -14,4 +14,7 @@ part of dart._internal;
  */
 Function printToZone = null;
 
-external void printToConsole(String line);
+@patch
+void printToConsole(String line) {
+  printString('$line');
+}

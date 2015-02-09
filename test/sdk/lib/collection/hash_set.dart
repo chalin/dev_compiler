@@ -50,39 +50,38 @@ abstract class _HashSetBase<E> extends SetBase<E> {
  * codes of objects are well distributed.
  */
 abstract class HashSet<E> implements Set<E> {
-  /**
-   * Create a hash set using the provided [equals] as equality.
-   *
-   * The provided [equals] must define a stable equivalence relation, and
-   * [hashCode] must be consistent with [equals]. If the [equals] or [hashCode]
-   * methods won't work on all objects, but only to instances of E, the
-   * [isValidKey] predicate can be used to restrict the keys that they are
-   * applied to. Any key for which [isValidKey] returns false is automatically
-   * assumed to not be in the set.
-   *
-   * If [equals] or [hashCode] are omitted, the set uses
-   * the objects' intrinsic [Object.operator==] and [Object.hashCode].
-   *
-   * If [isValidKey] is omitted, it defaults to testing if the object is an
-   * [E] instance.
-   *
-   * If you supply one of [equals] and [hashCode],
-   * you should generally also to supply the other.
-   * An example would be using [identical] and [identityHashCode],
-   * which is equivalent to using the shorthand [LinkedSet.identity]).
-   */
-  external factory HashSet({bool equals(E e1, E e2),
-                            int hashCode(E e),
-                            bool isValidKey(potentialKey)});
+  @patch
+  factory HashSet({ bool equals(E e1, E e2),
+                    int hashCode(E e),
+                    bool isValidKey(potentialKey) }) {
+    if (isValidKey == null) {
+      if (hashCode == null) {
+        if (equals == null) {
+          return new _HashSet<E>();
+        }
+        hashCode = _defaultHashCode;
+      } else {
+        if (identical(identityHashCode, hashCode) &&
+            identical(identical, equals)) {
+          return new _IdentityHashSet<E>();
+        }
+        if (equals == null) {
+          equals = _defaultEquals;
+        }
+      }
+    } else {
+      if (hashCode == null) {
+        hashCode = _defaultHashCode;
+      }
+      if (equals == null) {
+        equals = _defaultEquals;
+      }
+    }
+    return new _CustomHashSet<E>(equals, hashCode, isValidKey);
+  }
 
-  /**
-   * Creates an unordered identity-based set.
-   *
-   * Effectively a shorthand for:
-   *
-   *     new HashSet(equals: identical, hashCode: identityHashCodeOf)
-   */
-  external factory HashSet.identity();
+  @patch
+  factory HashSet.identity() = _IdentityHashSet<E>;
 
   /**
    * Create a hash set containing all [elements].

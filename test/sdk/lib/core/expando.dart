@@ -30,35 +30,28 @@ class Expando<T> {
    */
   final String name;
 
-  /**
-   * Creates a new [Expando]. The optional name is only used for
-   * debugging purposes and creating two different [Expando]s with the
-   * same name yields two [Expando]s that work on different properties
-   * of the objects they are used on.
-   */
-  external Expando([String name]);
+  @patch
+  Expando([String name]) : this.name = name;
 
   /**
    * Expando toString method override.
    */
   String toString() => "Expando:$name";
 
-  /**
-   * Gets the value of this [Expando]'s property on the given
-   * object. If the object hasn't been expanded, the method returns
-   * [:null:].
-   *
-   * The object must not be a number, a string, a boolean or null.
-   */
-  external T operator [](Object object);
+  @patch
+  T operator[](Object object) {
+    var values = Primitives.getProperty(object, _EXPANDO_PROPERTY_NAME);
+    return (values == null) ? null : Primitives.getProperty(values, _getKey());
+  }
 
-  /**
-   * Sets the value of this [Expando]'s property on the given
-   * object. Properties can effectively be removed again by setting
-   * their value to null.
-   *
-   * The object must not be a number, a string, a boolean or null.
-   */
-  external void operator []=(Object object, T value);
+  @patch
+  void operator[]=(Object object, T value) {
+    var values = Primitives.getProperty(object, _EXPANDO_PROPERTY_NAME);
+    if (values == null) {
+      values = new Object();
+      Primitives.setProperty(object, _EXPANDO_PROPERTY_NAME, values);
+    }
+    Primitives.setProperty(values, _getKey(), value);
+  }
 
 }

@@ -107,3 +107,5 @@ part 'stream_pipe.dart';
 part 'stream_transformers.dart';
 part 'timer.dart';
 part 'zone.dart';
+
+bool get _hasDocument => JS('String', 'typeof document') == 'object';

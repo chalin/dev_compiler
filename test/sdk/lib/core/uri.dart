@@ -698,18 +698,15 @@ class Uri {
     return windows ? _makeWindowsFileUrl(path) : _makeFileUri(path);
   }
 
-  /**
-   * Returns the natural base URI for the current platform.
-   *
-   * When running in a browser this is the current URL (from
-   * `window.location.href`).
-   *
-   * When not running in a browser this is the file URI referencing
-   * the current working directory.
-   */
-  external static Uri get base;
+  @patch
+  static Uri get base {
+    String uri = Primitives.currentUri();
+    if (uri != null) return Uri.parse(uri);
+    throw new UnsupportedError("'Uri.base' is not supported");
+  }
 
-  external static bool get _isWindows;
+  @patch
+  static bool get _isWindows => false;
 
   static _checkNonWindowsPathReservedCharacters(List<String> segments,
                                                 bool argumentError) {

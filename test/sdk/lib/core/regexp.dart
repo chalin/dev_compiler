@@ -118,14 +118,13 @@ abstract class Match {
  *     Iterable<Match> matches = exp.allMatches(str);
  */
 abstract class RegExp implements Pattern {
-  /**
-   * Constructs a regular expression.
-   *
-   * Throws a [FormatException] if [source] is not valid regular
-   * expression syntax.
-   */
-  external factory RegExp(String source, {bool multiLine: false,
-                                          bool caseSensitive: true});
+  @patch
+  factory RegExp(String source,
+                       {bool multiLine: false,
+                        bool caseSensitive: true})
+    => new JSSyntaxRegExp(source,
+                          multiLine: multiLine,
+                          caseSensitive: caseSensitive);
 
   /**
    * Searches for the first match of the regular expression

@@ -20,7 +20,9 @@ var typed_data;
   });
 
   class ByteData {
-    /* Unimplemented external factory ByteData(int length); */
+    constructor(length) {
+      return new NativeByteData(length);
+    }
     /*constructor*/ view(buffer, offsetInBytes, length) {
       if (offsetInBytes === undefined) offsetInBytes = 0;
       if (length === undefined) length = null;
@@ -30,8 +32,12 @@ var typed_data;
   dart.defineNamedConstructor(ByteData, "view");
 
   class Int8List {
-    /* Unimplemented external factory Int8List(int length); */
-    /* Unimplemented external factory Int8List.fromList(List<int> elements); */
+    constructor(length) {
+      return new NativeInt8List(length);
+    }
+    /*constructor*/ fromList(elements) {
+      return new dart.dload(/* Unimplemented unknown name */NativeInt8List, "fromList")(elements);
+    }
     /*constructor*/ view(buffer, offsetInBytes, length) {
       if (offsetInBytes === undefined) offsetInBytes = 0;
       if (length === undefined) length = null;
@@ -43,8 +49,12 @@ var typed_data;
   Int8List.BYTES_PER_ELEMENT = 1;
 
   class Uint8List {
-    /* Unimplemented external factory Uint8List(int length); */
-    /* Unimplemented external factory Uint8List.fromList(List<int> elements); */
+    constructor(length) {
+      return new NativeUint8List(length);
+    }
+    /*constructor*/ fromList(elements) {
+      return new dart.dload(/* Unimplemented unknown name */NativeUint8List, "fromList")(elements);
+    }
     /*constructor*/ view(buffer, offsetInBytes, length) {
       if (offsetInBytes === undefined) offsetInBytes = 0;
       if (length === undefined) length = null;
@@ -56,8 +66,12 @@ var typed_data;
   Uint8List.BYTES_PER_ELEMENT = 1;
 
   class Uint8ClampedList {
-    /* Unimplemented external factory Uint8ClampedList(int length); */
-    /* Unimplemented external factory Uint8ClampedList.fromList(List<int> elements); */
+    constructor(length) {
+      return new NativeUint8ClampedList(length);
+    }
+    /*constructor*/ fromList(elements) {
+      return new dart.dload(/* Unimplemented unknown name */NativeUint8ClampedList, "fromList")(elements);
+    }
     /*constructor*/ view(buffer, offsetInBytes, length) {
       if (offsetInBytes === undefined) offsetInBytes = 0;
       if (length === undefined) length = null;
@@ -69,8 +83,12 @@ var typed_data;
   Uint8ClampedList.BYTES_PER_ELEMENT = 1;
 
   class Int16List {
-    /* Unimplemented external factory Int16List(int length); */
-    /* Unimplemented external factory Int16List.fromList(List<int> elements); */
+    constructor(length) {
+      return new NativeInt16List(length);
+    }
+    /*constructor*/ fromList(elements) {
+      return new dart.dload(/* Unimplemented unknown name */NativeInt16List, "fromList")(elements);
+    }
     /*constructor*/ view(buffer, offsetInBytes, length) {
       if (offsetInBytes === undefined) offsetInBytes = 0;
       if (length === undefined) length = null;
@@ -82,8 +100,12 @@ var typed_data;
   Int16List.BYTES_PER_ELEMENT = 2;
 
   class Uint16List {
-    /* Unimplemented external factory Uint16List(int length); */
-    /* Unimplemented external factory Uint16List.fromList(List<int> elements); */
+    constructor(length) {
+      return new NativeUint16List(length);
+    }
+    /*constructor*/ fromList(elements) {
+      return new dart.dload(/* Unimplemented unknown name */NativeUint16List, "fromList")(elements);
+    }
     /*constructor*/ view(buffer, offsetInBytes, length) {
       if (offsetInBytes === undefined) offsetInBytes = 0;
       if (length === undefined) length = null;
@@ -95,8 +117,12 @@ var typed_data;
   Uint16List.BYTES_PER_ELEMENT = 2;
 
   class Int32List {
-    /* Unimplemented external factory Int32List(int length); */
-    /* Unimplemented external factory Int32List.fromList(List<int> elements); */
+    constructor(length) {
+      return new NativeInt32List(length);
+    }
+    /*constructor*/ fromList(elements) {
+      return new dart.dload(/* Unimplemented unknown name */NativeInt32List, "fromList")(elements);
+    }
     /*constructor*/ view(buffer, offsetInBytes, length) {
       if (offsetInBytes === undefined) offsetInBytes = 0;
       if (length === undefined) length = null;
@@ -108,8 +134,12 @@ var typed_data;
   Int32List.BYTES_PER_ELEMENT = 4;
 
   class Uint32List {
-    /* Unimplemented external factory Uint32List(int length); */
-    /* Unimplemented external factory Uint32List.fromList(List<int> elements); */
+    constructor(length) {
+      return new NativeUint32List(length);
+    }
+    /*constructor*/ fromList(elements) {
+      return new dart.dload(/* Unimplemented unknown name */NativeUint32List, "fromList")(elements);
+    }
     /*constructor*/ view(buffer, offsetInBytes, length) {
       if (offsetInBytes === undefined) offsetInBytes = 0;
       if (length === undefined) length = null;
@@ -121,8 +151,12 @@ var typed_data;
   Uint32List.BYTES_PER_ELEMENT = 4;
 
   class Int64List {
-    /* Unimplemented external factory Int64List(int length); */
-    /* Unimplemented external factory Int64List.fromList(List<int> elements); */
+    constructor(length) {
+      throw new core.UnsupportedError("Int64List not supported by dart2js.");
+    }
+    /*constructor*/ fromList(elements) {
+      throw new core.UnsupportedError("Int64List not supported by dart2js.");
+    }
     /*constructor*/ view(buffer, offsetInBytes, length) {
       if (offsetInBytes === undefined) offsetInBytes = 0;
       if (length === undefined) length = null;
@@ -134,8 +168,12 @@ var typed_data;
   Int64List.BYTES_PER_ELEMENT = 8;
 
   class Uint64List {
-    /* Unimplemented external factory Uint64List(int length); */
-    /* Unimplemented external factory Uint64List.fromList(List<int> elements); */
+    constructor(length) {
+      throw new core.UnsupportedError("Uint64List not supported by dart2js.");
+    }
+    /*constructor*/ fromList(elements) {
+      throw new core.UnsupportedError("Uint64List not supported by dart2js.");
+    }
     /*constructor*/ view(buffer, offsetInBytes, length) {
       if (offsetInBytes === undefined) offsetInBytes = 0;
       if (length === undefined) length = null;
@@ -147,8 +185,12 @@ var typed_data;
   Uint64List.BYTES_PER_ELEMENT = 8;
 
   class Float32List {
-    /* Unimplemented external factory Float32List(int length); */
-    /* Unimplemented external factory Float32List.fromList(List<double> elements); */
+    constructor(length) {
+      return new NativeFloat32List(length);
+    }
+    /*constructor*/ fromList(elements) {
+      return new dart.dload(/* Unimplemented unknown name */NativeFloat32List, "fromList")(elements);
+    }
     /*constructor*/ view(buffer, offsetInBytes, length) {
       if (offsetInBytes === undefined) offsetInBytes = 0;
       if (length === undefined) length = null;
@@ -160,8 +202,12 @@ var typed_data;
   Float32List.BYTES_PER_ELEMENT = 4;
 
   class Float64List {
-    /* Unimplemented external factory Float64List(int length); */
-    /* Unimplemented external factory Float64List.fromList(List<double> elements); */
+    constructor(length) {
+      return new NativeFloat64List(length);
+    }
+    /*constructor*/ fromList(elements) {
+      return new dart.dload(/* Unimplemented unknown name */NativeFloat64List, "fromList")(elements);
+    }
     /*constructor*/ view(buffer, offsetInBytes, length) {
       if (offsetInBytes === undefined) offsetInBytes = 0;
       if (length === undefined) length = null;
@@ -173,8 +219,12 @@ var typed_data;
   Float64List.BYTES_PER_ELEMENT = 8;
 
   class Float32x4List {
-    /* Unimplemented external factory Float32x4List(int length); */
-    /* Unimplemented external factory Float32x4List.fromList(List<Float32x4> elements); */
+    constructor(length) {
+      return new NativeFloat32x4List(length);
+    }
+    /*constructor*/ fromList(elements) {
+      return new dart.dload(/* Unimplemented unknown name */NativeFloat32x4List, "fromList")(elements);
+    }
     /*constructor*/ view(buffer, offsetInBytes, length) {
       if (offsetInBytes === undefined) offsetInBytes = 0;
       if (length === undefined) length = null;
@@ -186,8 +236,12 @@ var typed_data;
   Float32x4List.BYTES_PER_ELEMENT = 16;
 
   class Int32x4List {
-    /* Unimplemented external factory Int32x4List(int length); */
-    /* Unimplemented external factory Int32x4List.fromList(List<Int32x4> elements); */
+    constructor(length) {
+      return new NativeInt32x4List(length);
+    }
+    /*constructor*/ fromList(elements) {
+      return new dart.dload(/* Unimplemented unknown name */NativeInt32x4List, "fromList")(elements);
+    }
     /*constructor*/ view(buffer, offsetInBytes, length) {
       if (offsetInBytes === undefined) offsetInBytes = 0;
       if (length === undefined) length = null;
@@ -199,8 +253,12 @@ var typed_data;
   Int32x4List.BYTES_PER_ELEMENT = 16;
 
   class Float64x2List {
-    /* Unimplemented external factory Float64x2List(int length); */
-    /* Unimplemented external factory Float64x2List.fromList(List<Float64x2> elements); */
+    constructor(length) {
+      return new NativeFloat64x2List(length);
+    }
+    /*constructor*/ fromList(elements) {
+      return new dart.dload(/* Unimplemented unknown name */NativeFloat64x2List, "fromList")(elements);
+    }
     /*constructor*/ view(buffer, offsetInBytes, length) {
       if (offsetInBytes === undefined) offsetInBytes = 0;
       if (length === undefined) length = null;
@@ -212,11 +270,21 @@ var typed_data;
   Float64x2List.BYTES_PER_ELEMENT = 16;
 
   class Float32x4 {
-    /* Unimplemented external factory Float32x4(double x, double y, double z, double w); */
-    /* Unimplemented external factory Float32x4.splat(double v); */
-    /* Unimplemented external factory Float32x4.zero(); */
-    /* Unimplemented external factory Float32x4.fromInt32x4Bits(Int32x4 x); */
-    /* Unimplemented external factory Float32x4.fromFloat64x2(Float64x2 v); */
+    constructor(x, y, z, w) {
+      return new NativeFloat32x4(x, y, z, w);
+    }
+    /*constructor*/ splat(v) {
+      return new dart.dload(/* Unimplemented unknown name */NativeFloat32x4, "splat")(v);
+    }
+    /*constructor*/ zero() {
+      return new dart.dload(/* Unimplemented unknown name */NativeFloat32x4, "zero")();
+    }
+    /*constructor*/ fromInt32x4Bits(x) {
+      return new dart.dload(/* Unimplemented unknown name */NativeFloat32x4, "fromInt32x4Bits")(x);
+    }
+    /*constructor*/ fromFloat64x2(v) {
+      return new dart.dload(/* Unimplemented unknown name */NativeFloat32x4, "fromFloat64x2")(v);
+    }
   }
   dart.defineNamedConstructor(Float32x4, "splat");
   dart.defineNamedConstructor(Float32x4, "zero");
@@ -480,9 +548,15 @@ var typed_data;
   Float32x4.WWWW = 255;
 
   class Int32x4 {
-    /* Unimplemented external factory Int32x4(int x, int y, int z, int w); */
-    /* Unimplemented external factory Int32x4.bool(bool x, bool y, bool z, bool w); */
-    /* Unimplemented external factory Int32x4.fromFloat32x4Bits(Float32x4 x); */
+    constructor(x, y, z, w) {
+      return new NativeInt32x4(x, y, z, w);
+    }
+    /*constructor*/ bool(x, y, z, w) {
+      return new dart.dload(/* Unimplemented unknown name */NativeInt32x4, "bool")(x, y, z, w);
+    }
+    /*constructor*/ fromFloat32x4Bits(x) {
+      return new dart.dload(/* Unimplemented unknown name */NativeInt32x4, "fromFloat32x4Bits")(x);
+    }
   }
   dart.defineNamedConstructor(Int32x4, "bool");
   dart.defineNamedConstructor(Int32x4, "fromFloat32x4Bits");
@@ -744,10 +818,18 @@ var typed_data;
   Int32x4.WWWW = 255;
 
   class Float64x2 {
-    /* Unimplemented external factory Float64x2(double x, double y); */
-    /* Unimplemented external factory Float64x2.splat(double v); */
-    /* Unimplemented external factory Float64x2.zero(); */
-    /* Unimplemented external factory Float64x2.fromFloat32x4(Float32x4 v); */
+    constructor(x, y) {
+      return new NativeFloat64x2(x, y);
+    }
+    /*constructor*/ splat(v) {
+      return new dart.dload(/* Unimplemented unknown name */NativeFloat64x2, "splat")(v);
+    }
+    /*constructor*/ zero() {
+      return new dart.dload(/* Unimplemented unknown name */NativeFloat64x2, "zero")();
+    }
+    /*constructor*/ fromFloat32x4(v) {
+      return new dart.dload(/* Unimplemented unknown name */NativeFloat64x2, "fromFloat32x4")(v);
+    }
   }
   dart.defineNamedConstructor(Float64x2, "splat");
   dart.defineNamedConstructor(Float64x2, "zero");

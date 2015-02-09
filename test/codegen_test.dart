@@ -4,6 +4,10 @@
 library ddc.test.codegen_test;
 
 import 'dart:io';
+import 'package:ddc_analyzer/src/generated/engine.dart'
+    show AnalysisEngine, Logger;
+import 'package:ddc_analyzer/src/generated/java_engine.dart'
+    show CaughtException;
 import 'package:args/args.dart';
 import 'package:cli_util/cli_util.dart' show getSdkDir;
 import 'package:ddc/devc.dart';
@@ -85,23 +89,54 @@ main(arguments) {
     });
   }
 
-  test('devc dart:core', () {
-    // Get the test SDK. We use a checked in copy so test expectations can be
-    // generated against a specific SDK version.
-    // TODO(jmesserly): eventually we should track compiler messages.
-    // For now we're just trying to get decent code generation.
-    var testSdk = new TypeResolver.fromDir(path.join(testDir, 'sdk'));
+  group('sdk', () {
+    // The analyzer does not bubble exception messages for certain internal
+    // dart:* library failures, such as failing to find
+    // "_internal/libraries.dart". Instead it produces an opaque "failed to
+    // instantiate dart:core" message. To remedy this we hook up an analysis
+    // logger that prints these messages.
+    var savedLogger;
+    setUp(() {
+      savedLogger = AnalysisEngine.instance.logger;
+      AnalysisEngine.instance.logger = new PrintLogger();
+    });
+    tearDown(() {
+      AnalysisEngine.instance.logger = savedLogger;
+    });
 
-    var result = compile('dart:core', testSdk,
-        outputDir: actualDir,
-        checkSdk: true,
-        forceCompile: true,
-        outputDart: dartGen,
-        formatOutput: dartGen);
 
-    var coreDir = dartGen ? 'dart.core' : 'core';
-    var outputDir = new Directory(path.join(actualDir, coreDir));
-    expect(outputDir.existsSync(), true,
-        reason: '${outputDir.path} was created for dart:core');
+    test('devc dart:core', () {
+      // Get the test SDK. We use a checked in copy so test expectations can be
+      // generated against a specific SDK version.
+      // TODO(jmesserly): eventually we should track compiler messages.
+      // For now we're just trying to get decent code generation.
+      var testSdk = new TypeResolver.fromDir(path.join(testDir, 'sdk'));
+
+      var result = compile('dart:core', testSdk,
+      outputDir: actualDir,
+      checkSdk: true,
+      forceCompile: true,
+      outputDart: dartGen,
+      formatOutput: dartGen);
+
+      var coreDir = dartGen ? 'dart.core' : 'core';
+      var outputDir = new Directory(path.join(actualDir, coreDir));
+      expect(outputDir.existsSync(), true,
+      reason: '${outputDir.path} was created for dart:core');
+    });
   });
+}
+
+/// An implementation of analysis engine's [Logger] that prints.
+class PrintLogger implements Logger {
+  @override void logError(String message, [CaughtException exception]) {
+    print('[AnalysisEngine] error $message $exception');
+  }
+
+  @override void logError2(String message, Object exception) {
+    print('[AnalysisEngine] error $message $exception');
+  }
+
+  void logInformation(String message, [CaughtException exception]) {}
+  void logInformation2(String message, Object exception) {}
 }
